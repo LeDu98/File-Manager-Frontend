@@ -1,0 +1,19 @@
+<div class="sidebar" [ngClass]="{ 'sidebar-collapsed': isSidebarCollapsed }">
+    <div class="sidebar-header">
+        <a [routerLink]="'/file-manager'" class="sidebar-logo">{{
+        isSidebarCollapsed ? 'FM' : 'File Manager'
+      }}</a>
+    </div>
+    <div class="sidebar-menu">
+        <ul>
+            <ng-container *ngFor="let item of menuItems">
+                <li class="sidebar-menu-item">
+                    <a [routerLink]="item.route" class="sidebar-item">
+                        <i [class]="item.icon"></i>
+                        <span class="sidebar-item-text">{{ item.label }}</span>
+                    </a>
+                </li>
+            </ng-container>
+        </ul>
+    </div>
+</div>
