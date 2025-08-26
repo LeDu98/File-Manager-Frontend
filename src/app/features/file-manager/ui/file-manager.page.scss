@@ -1,0 +1,214 @@
+.file-manager {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+// Header Section
+.file-manager-header {
+    background: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    .p-toolbar-group-start {
+        gap: 0.5rem;
+    }
+    .p-toolbar-group-end {
+        gap: 0.5rem;
+    }
+}
+
+.file-manager-breadcrumb {
+    .p-breadcrumb {
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+}
+
+// Content Section
+.file-manager-content {
+    flex: 1;
+    padding: 1rem;
+    overflow: hidden;
+    .p-dataview {
+        height: 100%;
+        .p-dataview-content {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+    }
+}
+
+// DataView Header
+.data-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    .p-dataView-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #495057;
+    }
+    .p-dataView-count {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+}
+
+// List View Items
+.file-item-list {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    &:hover {
+        background-color: #f8f9fa;
+    }
+    &.selected {
+        background-color: #e3f2fd;
+        border-left: 3px solid #2196f3;
+    }
+    .file-icon {
+        margin-right: 1rem;
+        font-size: 1.5rem;
+        color: #6c757d;
+        width: 24px;
+        text-align: center;
+        i {
+            &.pi-folder {
+                color: #ff9800;
+            }
+            &.pi-file {
+                color: #757575;
+            }
+        }
+    }
+    .file-info {
+        flex: 1;
+        .file-name {
+            font-weight: 500;
+            color: #212529;
+            margin-bottom: 0.25rem;
+        }
+        .file-meta {
+            font-size: 0.875rem;
+            color: #6c757d;
+            span {
+                margin-right: 1rem;
+            }
+        }
+    }
+}
+
+// Grid View Items
+.file-item-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    &:hover {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    &.selected {
+        background-color: #e3f2fd;
+        border-color: #2196f3;
+        box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    }
+    .file-icon {
+        font-size: 3rem;
+        margin-bottom: 0.75rem;
+        color: #6c757d;
+        i {
+            &.pi-folder {
+                color: #ff9800;
+            }
+            &.pi-file {
+                color: #757575;
+            }
+        }
+    }
+    .file-name {
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 0.5rem;
+        word-break: break-word;
+        line-height: 1.2;
+        max-width: 100%;
+    }
+    .file-meta {
+        font-size: 0.75rem;
+        color: #6c757d;
+        line-height: 1.2;
+        span {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+    }
+}
+
+// Empty State
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+    color: #6c757d;
+    h3 {
+        margin: 1rem 0 0.5rem 0;
+        color: #495057;
+    }
+    p {
+        margin: 0;
+        max-width: 400px;
+        line-height: 1.5;
+    }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+    .file-manager-header {
+        .p-toolbar-group-start {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+        .p-button {
+            font-size: 0.875rem;
+            padding: 0.5rem;
+        }
+    }
+    .file-item-grid {
+        padding: 0.75rem;
+        .file-icon {
+            font-size: 2.5rem;
+        }
+        .file-name {
+            font-size: 0.875rem;
+        }
+    }
+}
+
+.p-toolbar {
+    background-color: transparent!important;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}

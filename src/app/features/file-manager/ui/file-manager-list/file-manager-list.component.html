@@ -1,0 +1,46 @@
+<div *ngIf="loading" class="flex justify-content-center my-5">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<div *ngIf="error" class="p-3 border-round surface-100 text-red-600">{{ error }}</div>
+
+
+<!-- LIST VIEW (p-table) -->
+<div *ngIf="!loading && !error && viewMode==='list'">
+    <p-table [value]="items" [tableStyle]="{ 'min-width': '40rem' }">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:3rem"></th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Updated</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td>
+                    <p-checkbox [binary]="true" [ngModel]="isSelected(row.id)" (onChange)="toggleSelected.emit(row.id)"></p-checkbox>
+                </td>
+                <td (dblclick)="itemOpened.emit(row)">{{ row.name }}</td>
+                <td>{{ row.kind }}</td>
+                <td>{{ row.size || 0 | number }}</td>
+                <td>{{ row.updatedAt | date:'short' }}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<!-- GRID VIEW (cards) -->
+<div *ngIf="!loading && !error && viewMode==='grid'" class="grid">
+    <div class="col-12 md:col-3" *ngFor="let item of items">
+        <p-card (dblclick)="itemOpened.emit(item)" [class.surface-200]="isSelected(item.id)" class="cursor-pointer">
+            <ng-template pTemplate="header">
+                <i class="pi" [ngClass]="item.kind==='folder' ? 'pi-folder' : 'pi-file'" style="font-size:1.5rem"></i>
+            </ng-template>
+            <div class="font-medium">{{ item.name }}</div>
+            <div class="text-600 text-sm">{{ item.kind }} • {{ item.updatedAt | date:'short' }}</div>
+
+        </p-card>
+    </div>
+</div>
