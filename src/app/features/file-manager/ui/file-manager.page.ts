@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -9,9 +9,11 @@ import { MenuModule } from 'primeng/menu';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { FileManagerStore } from '../state/file-managar.store';
 import { FileManagerList } from './file-manager-list/file-manager-list.component';
 import { FileManagerToolbar } from './file-manager-toolbar/file-manager-toolbar.component';
+import { ISelectionModel } from '../models';
 
 @Component({
   selector: 'app-file-manager',
@@ -31,10 +33,11 @@ import { FileManagerToolbar } from './file-manager-toolbar/file-manager-toolbar.
     FileManagerList
   ]
 })
-export class FileManagerPage implements OnInit {
+export class FileManagerPage implements OnInit, OnDestroy {
   private store = inject(FileManagerStore);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private urlSubscription?: Subscription;
 
   // Expose signals to template
   readonly viewMode = this.store.viewMode;
@@ -47,70 +50,69 @@ export class FileManagerPage implements OnInit {
   readonly canDelete = this.store.canDelete;
   readonly path = this.store.path;
   readonly pathNames = this.store.pathNames;
-
+  readonly breadcrumbs = this.store.breadcrumbs;
+  readonly currentPath = this.store.currentPath;
 
   // Breadcrumb model for PrimeNG
   readonly breadcrumbModel = computed(() => ({
-    home: { label: 'Root', command: () => this.onNavigate([]) },
-    items: this.pathNames().map((name, idx, arr) => ({
-      label: name,
-      command: () => this.onNavigate(this.path().slice(0, idx + 1))
+    home: { label: 'Root', command: () => this.onNavigateToRoot() },
+    items: (this.breadcrumbs() || []).map((breadcrumb, idx) => ({
+      label: breadcrumb.name,
+      command: () => this.onNavigateToBreadcrumb(idx)
     }))
   }));
 
   ngOnInit() {
-    // Read URL into signals on enter
-    const segs = this.route.snapshot.url.map(u => u.path).filter(Boolean);
-    this.store.navigateTo(segs);
+    this.urlSubscription = this.route.url.subscribe(segments => {
+      const segs = segments.map(s => s.path).filter(Boolean);
+      const folderId = segs.length > 0 ? segs[segs.length - 1] : null;
+      
+      const currentFolderId = this.store.currentFolderId();
+      if (currentFolderId !== folderId) {
+        this.store.navigateTo(folderId);
+      }
+    });
 
     const qp = this.route.snapshot.queryParamMap;
     const v = (qp.get('view') as 'grid'|'list') ?? 'list';
-    const by = (qp.get('by') as any) ?? 'name';
-    const dir = (qp.get('dir') as any) ?? 'asc';
     this.store.setViewMode(v);
   }
 
-  private folderEffect = effect(() => {
-    const path = this.path();
-    const view = this.viewMode();
-    void this.router.navigate(['/', 'file-manager', ...path], {
-      replaceUrl: true
-    });
-  });
-
-
-  onNavigate(path: string[]) { 
-    // For breadcrumb navigation, we need to reconstruct path names
-    const pathNames = path.map((seg, idx) => {
-      if (idx < this.pathNames().length && this.path()[idx] === seg) {
-        return this.pathNames()[idx];
-      }
-      return seg; // Fallback to segment if name not available
-    });
-    this.store.navigateTo(path, pathNames);
+  ngOnDestroy() {
+    this.urlSubscription?.unsubscribe();
   }
 
+  onNavigateToRoot() {
+    this.store.navigateTo(null);
+    void this.router.navigate(['/file-manager'], { replaceUrl: true });
+  }
+
+  onNavigateToBreadcrumb(index: number) {
+    this.store.navigateToBreadcrumb(index);
+    const breadcrumbs = this.store.breadcrumbs();
+    if (index >= 0 && index < breadcrumbs.length) {
+      const folderId = breadcrumbs[index].id;
+      void this.router.navigate(['/file-manager', folderId], { replaceUrl: true });
+    }
+  }
 
   // Toolbar handlers
   onRename(newName: string) { void this.store.renameSelected(newName); }
   onDelete() { void this.store.deleteSelected(); }
   onViewMode(mode: 'grid'|'list') { this.store.setViewMode(mode); }
 
-
   // List handlers
   onOpen(item: any) {
     if (item.kind === 'folder') {
-      // Navigate to folder using its ID and track the name
-      const newPath = [...this.path(), item.id];
-      const newPathNames = [...this.pathNames(), item.name];
-      this.store.navigateTo(newPath, newPathNames);
+      this.store.navigateTo(item.id);
+      void this.router.navigate(['/file-manager', item.id], { replaceUrl: true });
     } else {
       // open preview / download
       console.log('open file', item);
     }
   }
 
-  onToggleSelect(id: any)  {
-     this.store.toggleSelect(id); 
+  onToggleSelect(selection: ISelectionModel)  {
+     this.store.toggleSelect(selection); 
   }
 }

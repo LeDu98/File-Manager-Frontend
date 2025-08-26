@@ -19,6 +19,17 @@
     }
 }
 
+::ng-deep p-breadcrumb {
+    .p-breadcrumb-list {
+        margin-left: 15px;
+        li {
+            a {
+                color: #000;
+            }
+        }
+    }
+}
+
 .file-manager-breadcrumb {
     .p-breadcrumb {
         background: transparent;
@@ -211,4 +222,9 @@
     border-bottom: 1px solid #dee2e6;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+}
+
+::ng-deep .p-breadcrumb .p-breadcrumb-item {
+    cursor: pointer;
+    user-select: none;
 }

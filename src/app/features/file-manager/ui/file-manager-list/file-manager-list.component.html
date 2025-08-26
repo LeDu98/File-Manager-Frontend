@@ -10,21 +10,33 @@
         <ng-template pTemplate="header">
             <tr>
                 <th style="width:3rem"></th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Size</th>
-                <th>Updated</th>
+                <th><span style="user-select: none;">Name</span></th>
+                <th><span style="user-select: none;">Type</span></th>
+                <th><span style="user-select: none;">Size</span></th>
+                <th><span style="user-select: none;">Updated</span></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
-            <tr>
-                <td>
-                    <p-checkbox [binary]="true" [ngModel]="isSelected(row.id)" (onChange)="toggleSelected.emit(row.id)"></p-checkbox>
+            <tr (click)="toggleSelected.emit({id:row.id, kind:row.kind})" [ngClass]="isSelected(row.id) ? 'selected-row' : 'non-selected-row'" style="transition: background 0.2s;">
+                <td (click)="$event.stopPropagation()">
+                    <p-checkbox [binary]="true" [ngModel]="isSelected(row.id)" (onChange)="toggleSelected.emit({id:row.id, kind:row.kind})"></p-checkbox>
                 </td>
-                <td (dblclick)="itemOpened.emit(row)">{{ row.name }}</td>
-                <td>{{ row.kind }}</td>
-                <td>{{ row.size || 0 | number }}</td>
-                <td>{{ row.updatedAt | date:'short' }}</td>
+                <td (dblclick)="itemOpened.emit(row)">
+                    <span class="folder-link" style="user-select: none;" pTooltip="Double-click to open">
+                        {{ row.name }}
+                    </span>
+                </td>
+                <td>
+                    <span style="user-select: none;">{{ row.kind }}</span>
+                </td>
+                <td>
+                    <span style="user-select: none;">
+                        {{ row.kind === 'file' ? formatBytes(row.size || 0) : '' }}
+                    </span>
+                </td>
+                <td>
+                    <span style="user-select: none;">{{ row.modifiedOn | date:'dd.MM.yyyy HH:mm' }}</span>
+                </td>
             </tr>
         </ng-template>
     </p-table>

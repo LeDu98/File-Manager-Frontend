@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ToastService } from './toast.service';
 
 
 export enum ErrorType {
@@ -22,6 +23,7 @@ export interface AppError {
 
 @Injectable({ providedIn: 'root' })
 export class ErrorHandlerService {
+    constructor(private toastService: ToastService) {}
     handleError(error: any): AppError {
         const timestamp = new Date();
         
@@ -107,5 +109,51 @@ export class ErrorHandlerService {
             timestamp: error.timestamp,
             originalError: error.originalError
         });
+    }
+
+    /**
+     * Display error message to user using toast notification
+     */
+    showErrorToast(error: AppError): void {
+        let summary = 'Error';
+        
+        switch (error.type) {
+            case ErrorType.VALIDATION:
+                summary = 'Invalid data';
+                break;
+            case ErrorType.UNAUTHORIZED:
+                summary = 'Unauthorized access';
+                break;
+            case ErrorType.FORBIDDEN:
+                summary = 'Forbidden Action';
+                break;
+            case ErrorType.NOT_FOUND:
+                summary = 'Not Found';
+                break;
+            case ErrorType.TIMEOUT:
+                summary = 'Timeout';
+                break;
+            case ErrorType.SERVER:
+                summary = 'Server error';
+                break;
+            default:
+                summary = 'Network error';
+        }
+
+        this.toastService.showError(summary, error.message);
+    }
+
+    /**
+     * Handle error and optionally show toast notification
+     */
+    handleErrorWithToast(error: any, showToast: boolean = true): AppError {
+        const appError = this.handleError(error);
+        this.logError(appError);
+        
+        if (showToast) {
+            this.showErrorToast(appError);
+        }
+        
+        return appError;
     }
 }

@@ -33,3 +33,23 @@ export interface IFolderChildrenDto{
     files: IFileDto[];
     folders: IFolderDto[];
 }
+
+export interface IDeleteItemsRequest{
+    folderIds: string[];
+    fileIds: string[];
+}
+
+export interface ISelectionModel{
+    id: string;
+    kind: string;
+}
+
+export interface IFolderBreadcrumb {
+    id: string;
+    name: string;
+    level: number;
+}
+
+export interface IFolderBreadcrumbPath {
+    breadcrumbs: IFolderBreadcrumb[];
+}

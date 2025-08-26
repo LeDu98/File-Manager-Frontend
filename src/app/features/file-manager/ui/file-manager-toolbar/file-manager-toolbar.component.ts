@@ -14,7 +14,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class FileManagerToolbar {
   @Input() viewMode: 'grid'|'list' = 'list';
-  @Input() sort!: { by: 'name'|'date'|'size'; dir: 'asc'|'desc' };
   @Input() canRename = false;
   @Input() canDelete = false;
   @Input() selectionCount = 0;
@@ -23,7 +22,6 @@ export class FileManagerToolbar {
   @Output() renameRequested = new EventEmitter<string>();
   @Output() deleteRequested = new EventEmitter<void>();
   @Output() viewModeChanged = new EventEmitter<'grid'|'list'>();
-  @Output() sortChanged = new EventEmitter<{by: 'name'|'date'|'size'; dir: 'asc'|'desc'}>();
 
 
   renameValue = '';
