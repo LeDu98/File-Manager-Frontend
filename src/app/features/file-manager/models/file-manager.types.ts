@@ -49,7 +49,3 @@ export interface IFolderBreadcrumb {
     name: string;
     level: number;
 }
-
-export interface IFolderBreadcrumbPath {
-    breadcrumbs: IFolderBreadcrumb[];
-}
