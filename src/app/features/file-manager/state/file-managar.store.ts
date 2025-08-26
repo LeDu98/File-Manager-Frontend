@@ -181,6 +181,8 @@ export class FileManagerStore {
             await firstValueFrom(this.api.deleteItems(deleteItemsRequest));
             this.toastService.showSuccess('Success','Selected items are successfully deleted!');
             this.clearSelection();
+            // Refresh folder content after successful deletion
+            await this.fetch();
         } catch (e: any) {
             this.toastService.showError('Error','Something went wrong with deleting selected items!');
             this.error.set(e?.message ?? 'Failed to delete');
