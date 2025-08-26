@@ -62,7 +62,6 @@ export class FileManagerStore {
                 folderId ? firstValueFrom(this.api.getFolderBreadcrumbPath(folderId)) : Promise.resolve([])
             ]);
             
-            console.log('Breadcrumb response:', breadcrumbRes);
             
             this.items.set([
                 ...contentRes.folders.map(f => ({
@@ -84,7 +83,6 @@ export class FileManagerStore {
             
             // Update breadcrumbs from API
             const breadcrumbs = Array.isArray(breadcrumbRes) ? breadcrumbRes : (breadcrumbRes || []);
-            console.log('Setting breadcrumbs:', breadcrumbs);
             this.breadcrumbs.set(breadcrumbs);
             
             if (breadcrumbs.length > 0) {
@@ -186,6 +184,21 @@ export class FileManagerStore {
         } catch (e: any) {
             this.toastService.showError('Error','Something went wrong with deleting selected items!');
             this.error.set(e?.message ?? 'Failed to delete');
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    async createFolder(name: string, parentId: string | null) {
+        try {
+            this.loading.set(true);
+            await firstValueFrom(this.api.createFolder({ name, parentId }));
+            this.toastService.showSuccess('Success', 'Folder created successfully!');
+            // Refresh folder content after successful creation
+            await this.fetch();
+        } catch (e: any) {
+            this.toastService.showError('Error', 'Failed to create folder!');
+            this.error.set(e?.message ?? 'Failed to create folder');
         } finally {
             this.loading.set(false);
         }

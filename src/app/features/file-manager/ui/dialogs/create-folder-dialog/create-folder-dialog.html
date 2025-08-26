@@ -1,0 +1,14 @@
+<p-dialog header="Create New Folder" [(visible)]="showDialog" [modal]="true" [style]="{width: '400px'}" [closable]="true">
+    <div class="flex flex-column gap-3">
+        <div style="display: flex; flex-direction: column;">
+            <label for="folderName" style="margin-bottom: 0.5rem;">Folder Name</label>
+            <input pInputText id="folderName" [(ngModel)]="newFolderName" placeholder="Enter folder name" style="margin-bottom: 0.5rem;" />
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between;">
+            <p-button label="Cancel" severity="secondary" (click)="cancelNewFolder()"></p-button>
+            <p-button label="Save" severity="primary" (click)="saveNewFolder()" [disabled]="!newFolderName || !newFolderName.trim()"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>

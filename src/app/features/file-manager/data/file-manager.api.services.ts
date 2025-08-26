@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpService } from '../../../shared/services/http.service';
-import { IDeleteItemsRequest, IFolderBreadcrumb, IFolderChildrenDto } from '../models';
+import { ICreateFolderRequest, IDeleteItemsRequest, IFolderBreadcrumb, IFolderChildrenDto } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class FilesApiService {
@@ -17,5 +17,9 @@ export class FilesApiService {
 
     deleteItems(deleteItemsRequest: IDeleteItemsRequest): Observable<void> {
         return this.httpService.post<void>(`/file-manager/batch/delete`, deleteItemsRequest);
+    }
+
+    createFolder(request: ICreateFolderRequest): Observable<void> {
+        return this.httpService.post<void>(`/folder/create`, request);
     }
 }

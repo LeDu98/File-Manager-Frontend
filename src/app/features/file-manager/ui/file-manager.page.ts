@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { FileManagerStore } from '../state/file-managar.store';
 import { FileManagerList } from './file-manager-list/file-manager-list.component';
 import { FileManagerToolbar } from './file-manager-toolbar/file-manager-toolbar.component';
-import { ISelectionModel } from '../models';
+import { ICreateFolderRequest, ISelectionModel } from '../models';
 
 @Component({
   selector: 'app-file-manager',
@@ -52,6 +52,7 @@ export class FileManagerPage implements OnInit, OnDestroy {
   readonly pathNames = this.store.pathNames;
   readonly breadcrumbs = this.store.breadcrumbs;
   readonly currentPath = this.store.currentPath;
+  readonly currentFolderId = this.store.currentFolderId;
 
   // Breadcrumb model for PrimeNG
   readonly breadcrumbModel = computed(() => ({
@@ -114,5 +115,9 @@ export class FileManagerPage implements OnInit, OnDestroy {
 
   onToggleSelect(selection: ISelectionModel)  {
      this.store.toggleSelect(selection); 
+  }
+
+  onCreateFolder(request: ICreateFolderRequest) {
+    void this.store.createFolder(request.name, request.parentId);
   }
 }

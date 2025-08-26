@@ -49,3 +49,8 @@ export interface IFolderBreadcrumb {
     name: string;
     level: number;
 }
+
+export interface ICreateFolderRequest {
+    name: string;
+    parentId: string | null;
+}
