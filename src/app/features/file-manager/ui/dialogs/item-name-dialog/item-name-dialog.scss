@@ -1,0 +1,17 @@
+.ng-invalid {
+    border-color: #e24c4c !important;
+    box-shadow: 0 0 0 0.2rem rgba(226, 76, 76, 0.25) !important;
+}
+
+.validation-error {
+    color: #e24c4c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.file-extension-info {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-style: italic;
+}

@@ -1,1 +1,1 @@
-export { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog';
+export { ItemNameDialogComponent } from './item-name-dialog/item-name-dialog';

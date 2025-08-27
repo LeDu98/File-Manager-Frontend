@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { FileManagerStore } from '../state/file-managar.store';
 import { FileManagerList } from './file-manager-list/file-manager-list.component';
 import { FileManagerToolbar } from './file-manager-toolbar/file-manager-toolbar.component';
-import { ICreateFolderRequest, ISelectionModel } from '../models';
+import { ICreateFolderRequest, ISelectedItemInfo, ISelectionModel, ItemKind } from '../models';
 
 @Component({
   selector: 'app-file-manager',
@@ -53,6 +53,19 @@ export class FileManagerPage implements OnInit, OnDestroy {
   readonly breadcrumbs = this.store.breadcrumbs;
   readonly currentPath = this.store.currentPath;
   readonly currentFolderId = this.store.currentFolderId;
+  
+  readonly selectedItem = computed((): ISelectedItemInfo | null => {
+    const selection = Array.from(this.selection());
+    if (selection.length === 1) {
+      const selectedItem = this.items().find(item => item.id === selection[0].id);
+      return selectedItem ? {
+        id: selectedItem.id,
+        name: selectedItem.name,
+        kind: selectedItem.kind
+      } : null;
+    }
+    return null;
+  });
 
   // Breadcrumb model for PrimeNG
   readonly breadcrumbModel = computed(() => ({
@@ -97,8 +110,9 @@ export class FileManagerPage implements OnInit, OnDestroy {
     }
   }
 
-  // Toolbar handlers
-  onRename(newName: string) { void this.store.renameSelected(newName); }
+  onRename(renameData: {newName: string, itemId: string, itemKind: ItemKind | null}) {
+    void this.store.renameSelected(renameData.newName, renameData.itemId, renameData.itemKind); 
+  }
   onDelete() { void this.store.deleteSelected(); }
   onViewMode(mode: 'grid'|'list') { this.store.setViewMode(mode); }
 

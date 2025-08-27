@@ -54,3 +54,14 @@ export interface ICreateFolderRequest {
     name: string;
     parentId: string | null;
 }
+
+export interface ISelectedItemInfo {
+  id: string;
+  name: string;
+  kind: ItemKind;
+}
+
+export interface IRenameItemRequest {
+    id: string;
+    name: string;
+}

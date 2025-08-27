@@ -2,7 +2,7 @@ import { computed, effect, signal } from "@angular/core";
 
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
-import { IDeleteItemsRequest, IFileManagerItem, ISelectionModel, IFolderBreadcrumb } from "../models";
+import { IDeleteItemsRequest, IFileManagerItem, ISelectionModel, IFolderBreadcrumb, ItemKind } from "../models";
 import { FilesApiService } from "../data/file-manager.api.services";
 import { ToastService } from "../../../shared/services/toast.service";
 
@@ -163,7 +163,29 @@ export class FileManagerStore {
     clearSelection() { this.selection.set(new Set()); }
 
 
-    async renameSelected(newName: string) {
+    async renameSelected(newName: string, itemId: string, itemKind: ItemKind | null) {
+        try {
+            this.loading.set(true);
+            if(itemKind === 'folder') {
+                await firstValueFrom(this.api.renameFolder({
+                    id: itemId,
+                    name: newName
+                }));
+            } else if(itemKind === 'file') {
+                await firstValueFrom(this.api.renameFile({
+                    id: itemId,
+                    name: newName
+                }));
+            }
+            this.toastService.showSuccess('Success', 'Selected items are successfully renamed!');
+            this.clearSelection();
+            await this.fetch();
+        } catch (e: any) {
+            this.toastService.showError('Error', 'Failed to rename selected items!');
+            this.error.set(e?.message ?? 'Failed to rename');
+        } finally {
+            this.loading.set(false);
+        }
     }
 
     async deleteSelected() {

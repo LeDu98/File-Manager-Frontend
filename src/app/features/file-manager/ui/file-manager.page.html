@@ -1,8 +1,8 @@
 <p-breadcrumb [model]="breadcrumbModel().items" [home]="breadcrumbModel().home" class="mb-3"></p-breadcrumb>
 
 
-<app-file-manager-toolbar [viewMode]="viewMode()" [canRename]="canRename()" [canDelete]="canDelete()" [selectionCount]="selectionCount()" [currentFolderId]="currentFolderId()" (renameRequested)="onRename($event)" (deleteRequested)="onDelete()" (viewModeChanged)="onViewMode($event)"
-    (createFolderRequested)="onCreateFolder($event)"></app-file-manager-toolbar>
+<app-file-manager-toolbar [viewMode]="viewMode()" [canRename]="canRename()" [canDelete]="canDelete()" [selectionCount]="selectionCount()" [currentFolderId]="currentFolderId()" [selectedItem]="selectedItem()" (renameRequested)="onRename($event)" (deleteRequested)="onDelete()"
+    (viewModeChanged)="onViewMode($event)" (createFolderRequested)="onCreateFolder($event)"></app-file-manager-toolbar>
 
 
 <app-file-manager-list class="mt-3 block" [items]="items()" [viewMode]="viewMode()" [selection]="selection()" [loading]="loading()" [error]="error()" (itemOpened)="onOpen($event)" (toggleSelected)="onToggleSelect($event)"></app-file-manager-list>
