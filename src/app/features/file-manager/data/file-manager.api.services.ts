@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpService } from '../../../shared/services/http.service';
-import { ICreateFolderRequest, IDeleteItemsRequest, IFolderBreadcrumb, IFolderChildrenDto, IRenameItemRequest } from '../models';
+import { ICreateFolderRequest, IDeleteItemsRequest, IFolderBreadcrumb, IFolderChildrenDto, IRenameItemRequest, IUploadResponse } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class FilesApiService {
@@ -29,5 +30,28 @@ export class FilesApiService {
 
     renameFile(request: IRenameItemRequest): Observable<void> {
         return this.httpService.post<void>(`/file/rename`, request);
+    }
+
+    uploadFiles(files: File[], parentId: string | null): Observable<IUploadResponse> {
+        const formData = new FormData();
+         
+        files.forEach((file) => {
+            formData.append('Files', file);
+        });
+        
+        if (parentId) {
+            formData.append('ParentId', parentId);
+        }
+        
+        return this.httpService.postFormData<IUploadResponse>('/file/upload', formData);
+    }
+
+    getFileContent(fileId: string): Observable<{ data: Uint8Array; contentType: string }> {
+        return this.httpService.getBinary(`/file/${fileId}/content`).pipe(
+            map((response) => ({
+                data: new Uint8Array(response.data),
+                contentType: response.contentType
+            }))
+        );
     }
 }

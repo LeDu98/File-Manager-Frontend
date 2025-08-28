@@ -1,0 +1,118 @@
+.upload-container {
+    padding: 1rem 0;
+}
+
+.file-input-container {
+    border: 2px dashed var(--surface-border);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    background: var(--surface-ground);
+    transition: all 0.3s ease;
+    &:hover {
+        border-color: var(--primary-color);
+        background: var(--highlight-bg);
+    }
+}
+
+.selected-files-container {
+    h5 {
+        margin-bottom: 1rem;
+        color: var(--text-color);
+    }
+}
+
+.file-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--surface-border);
+    border-radius: 6px;
+    padding: 0.5rem;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--surface-border);
+    &:last-child {
+        border-bottom: none;
+    }
+    &:hover {
+        background: var(--highlight-bg);
+    }
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    .file-name {
+        font-weight: 500;
+        margin-right: 0.5rem;
+    }
+    .file-size {
+        color: var(--text-color-secondary);
+        font-size: 0.875rem;
+    }
+}
+
+.upload-progress {
+    text-align: center;
+}
+
+.error-message {
+    margin-top: 1rem;
+}
+
+.dialog-footer {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.text-muted {
+    color: var(--text-color-secondary);
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mr-2 {
+    margin-right: 0.5rem;
+}
+
+.block {
+    display: block;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.w-full {
+    width: 100%;
+}
+
+// Override PrimeNG dialog footer styles
+:host ::ng-deep {
+    .p-dialog-footer {
+        padding: 1.25rem;
+        border-top: 1px solid var(--surface-border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+    .p-dialog-header {
+        padding: 1.25rem 1.25rem 0 1.25rem;
+    }
+    .p-dialog-content {
+        padding: 0 1.25rem 1.25rem 1.25rem;
+    }
+}

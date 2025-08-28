@@ -2,7 +2,7 @@ import { computed, effect, signal } from "@angular/core";
 
 import { Injectable } from "@angular/core";
 import { firstValueFrom } from "rxjs";
-import { IDeleteItemsRequest, IFileManagerItem, ISelectionModel, IFolderBreadcrumb, ItemKind } from "../models";
+import { IDeleteItemsRequest, IFileManagerItem, ISelectionModel, IFolderBreadcrumb, ItemKind, IUploadResponse } from "../models";
 import { FilesApiService } from "../data/file-manager.api.services";
 import { ToastService } from "../../../shared/services/toast.service";
 
@@ -221,6 +221,31 @@ export class FileManagerStore {
         } catch (e: any) {
             this.toastService.showError('Error', 'Failed to create folder!');
             this.error.set(e?.message ?? 'Failed to create folder');
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    async uploadFiles(files: File[], parentId: string | null) {
+        try {
+            this.loading.set(true);
+            const response = await firstValueFrom(this.api.uploadFiles(files, parentId));
+            
+            if (response.errors && response.errors.length > 0) {
+                this.toastService.showError('Upload Warning', `Some files failed to upload: ${response.errors.join(', ')}`);
+            }
+            
+            if (response.success !== false && response.uploadedFiles && response.uploadedFiles.length > 0) {
+                this.toastService.showSuccess('Success', `${response.uploadedFiles.length} files uploaded successfully!`);
+            } else if (response.success !== false && files.length > 0) {
+                this.toastService.showSuccess('Success', `${files.length} files uploaded successfully!`);
+            }
+            
+            // Refresh folder content after upload
+            await this.fetch();
+        } catch (e: any) {
+            this.toastService.showError('Error', 'Failed to upload files!');
+            this.error.set(e?.message ?? 'Failed to upload files');
         } finally {
             this.loading.set(false);
         }

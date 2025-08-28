@@ -1,6 +1,6 @@
 <p-toolbar>
     <div class="p-toolbar-group-start" style="gap: 0.75rem; display: flex; align-items: center;">
-        <p-button label="Upload" icon="pi pi-upload" severity="primary"></p-button>
+        <p-button label="Upload" icon="pi pi-upload" severity="primary" (click)="showUploadDialog()"></p-button>
         <p-button label="New folder" icon="pi pi-folder-plus" severity="primary" (click)="showNewFolderDialog()"></p-button>
         <p-button label="Rename" icon="pi pi-pencil" [disabled]="!canRename" (click)="showRenameDialog()" severity="primary"></p-button>
         <p-button label="Delete" icon="pi pi-trash" [disabled]="!canDelete" (click)="deleteRequested.emit()" severity="danger"></p-button>
@@ -13,3 +13,4 @@
 </p-toolbar>
 
 <app-item-name-dialog (folderCreated)="onCreateFolder($event)" (itemRenamed)="onRenameItem($event)"></app-item-name-dialog>
+<app-upload-dialog (filesUploaded)="onFilesUploaded($event)"></app-upload-dialog>

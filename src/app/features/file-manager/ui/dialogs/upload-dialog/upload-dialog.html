@@ -1,0 +1,52 @@
+<p-dialog [visible]="showDialog" [modal]="true" [header]="'Upload Files'" [style]="{width: '500px'}" (onHide)="onDialogHide()" [closable]="true" [draggable]="false" [resizable]="false">
+
+    <div class="upload-container">
+        <!-- File Input -->
+        <div class="file-input-container">
+            <input #fileInput type="file" multiple accept=".jpg,.jpeg,.png,.txt" (change)="onFileSelect($event)" style="display: none;" />
+
+            <p-button label="Choose Files" severity="secondary" icon="pi pi-upload" (click)="fileInput.click()" [outlined]="true" styleClass="w-full">
+            </p-button>
+
+            <small class="text-muted mt-2 block">
+        Allowed file types: JPG, PNG, TXT
+      </small>
+        </div>
+
+        <!-- Selected Files List -->
+        <div *ngIf="selectedFiles.length > 0" class="selected-files-container mt-3">
+            <h5>Selected Files ({{ selectedFiles.length }})</h5>
+            <div class="file-list">
+                <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
+                    <div class="file-info">
+                        <i class="pi pi-file mr-2"></i>
+                        <span class="file-name">{{ file.name }}</span>
+                        <span class="file-size">({{ formatFileSize(file.size) }})</span>
+                    </div>
+                    <p-button icon="pi pi-times" [text]="true" severity="danger" size="small" (click)="removeFile(i)" pTooltip="Remove file">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div *ngIf="uploading" class="upload-progress mt-3">
+            <p-progressBar [value]="uploadProgress"></p-progressBar>
+            <p class="text-center mt-2">Uploading files... {{ uploadProgress }}%</p>
+        </div>
+
+        <!-- Error Messages -->
+        <div *ngIf="errorMessage" class="error-message mt-3">
+            <p-message severity="error" [text]="errorMessage"></p-message>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="dialog-footer">
+            <p-button label="Cancel" severity="secondary" icon="pi pi-times" [text]="true" (click)="cancel()" [disabled]="uploading">
+            </p-button>
+            <p-button label="Upload" severity="primary" icon="pi pi-upload" (click)="upload()" [disabled]="selectedFiles.length === 0 || uploading">
+            </p-button>
+        </div>
+    </ng-template>
+</p-dialog>

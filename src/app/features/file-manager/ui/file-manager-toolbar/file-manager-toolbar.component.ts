@@ -2,14 +2,14 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { Toolbar } from 'primeng/toolbar';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
-import { ItemNameDialogComponent } from '../dialogs';
+import { ItemNameDialogComponent, UploadDialogComponent } from '../dialogs';
 import { ICreateFolderRequest, ISelectedItemInfo, ItemKind } from '../../models';
 
 
 @Component({
   standalone: true,
   selector: 'app-file-manager-toolbar',
-  imports: [Toolbar, Button, DropdownModule, ItemNameDialogComponent],
+  imports: [Toolbar, Button, DropdownModule, ItemNameDialogComponent, UploadDialogComponent],
   templateUrl: './file-manager-toolbar.component.html'
 })
 export class FileManagerToolbar {
@@ -24,11 +24,17 @@ export class FileManagerToolbar {
   @Output() deleteRequested = new EventEmitter<void>();
   @Output() viewModeChanged = new EventEmitter<'grid'|'list'>();
   @Output() createFolderRequested = new EventEmitter<ICreateFolderRequest>();
+  @Output() uploadRequested = new EventEmitter<{ files: File[]; parentId: string | null }>();
 
   @ViewChild(ItemNameDialogComponent) itemNameDialog!: ItemNameDialogComponent;
+  @ViewChild(UploadDialogComponent) uploadDialog!: UploadDialogComponent;
 
   showNewFolderDialog() {
     this.itemNameDialog.showCreateDialog(this.currentFolderId);
+  }
+
+  showUploadDialog() {
+    this.uploadDialog.showUploadDialog(this.currentFolderId);
   }
 
   showRenameDialog() {
@@ -43,5 +49,9 @@ export class FileManagerToolbar {
 
   onRenameItem(renameData: { newName: string; itemId: string; itemKind: ItemKind | null }) {
     this.renameRequested.emit(renameData);
+  }
+
+  onFilesUploaded(uploadData: { files: File[]; parentId: string | null }) {
+    this.uploadRequested.emit(uploadData);
   }
 }

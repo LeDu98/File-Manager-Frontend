@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -13,7 +13,8 @@ import { Subscription } from 'rxjs';
 import { FileManagerStore } from '../state/file-managar.store';
 import { FileManagerList } from './file-manager-list/file-manager-list.component';
 import { FileManagerToolbar } from './file-manager-toolbar/file-manager-toolbar.component';
-import { ICreateFolderRequest, ISelectedItemInfo, ISelectionModel, ItemKind } from '../models';
+import { FilePreviewDialogComponent } from './dialogs';
+import { ICreateFolderRequest, ISelectedItemInfo, ISelectionModel, ItemKind, IFileManagerItem } from '../models';
 
 @Component({
   selector: 'app-file-manager',
@@ -30,7 +31,8 @@ import { ICreateFolderRequest, ISelectedItemInfo, ISelectionModel, ItemKind } fr
     ContextMenuModule,
     TooltipModule,
     FileManagerToolbar,
-    FileManagerList
+    FileManagerList,
+    FilePreviewDialogComponent
   ]
 })
 export class FileManagerPage implements OnInit, OnDestroy {
@@ -38,6 +40,8 @@ export class FileManagerPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private urlSubscription?: Subscription;
+
+  @ViewChild(FilePreviewDialogComponent) filePreviewDialog!: FilePreviewDialogComponent;
 
   // Expose signals to template
   readonly viewMode = this.store.viewMode;
@@ -117,13 +121,12 @@ export class FileManagerPage implements OnInit, OnDestroy {
   onViewMode(mode: 'grid'|'list') { this.store.setViewMode(mode); }
 
   // List handlers
-  onOpen(item: any) {
+  onOpen(item: IFileManagerItem) {
     if (item.kind === 'folder') {
       this.store.navigateTo(item.id);
       void this.router.navigate(['/file-manager', item.id], { replaceUrl: true });
     } else {
-      // open preview / download
-      console.log('open file', item);
+      this.filePreviewDialog.showPreview(item);
     }
   }
 
@@ -133,5 +136,9 @@ export class FileManagerPage implements OnInit, OnDestroy {
 
   onCreateFolder(request: ICreateFolderRequest) {
     void this.store.createFolder(request.name, request.parentId);
+  }
+
+  onUpload(uploadData: { files: File[]; parentId: string | null }) {
+    void this.store.uploadFiles(uploadData.files, uploadData.parentId);
   }
 }

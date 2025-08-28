@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, retry, map } from 'rxjs/operators';
 import { ErrorHandlerService } from './error-handler.service';
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +40,26 @@ export class HttpService {
 
     patch<T>(endpoint: string, data: any, options?: { headers?: HttpHeaders }): Observable<T> {
         return this.http.patch<T>(`${this.baseUrl}${endpoint}`, data, options).pipe(
+            catchError((error: HttpErrorResponse) => this.handleError(error))
+        );
+    }
+
+    postFormData<T>(endpoint: string, formData: FormData): Observable<T> {
+        return this.http.post<T>(`${this.baseUrl}${endpoint}`, formData).pipe(
+            catchError((error: HttpErrorResponse) => this.handleError(error))
+        );
+    }
+
+    getBinary(endpoint: string): Observable<{ data: ArrayBuffer; contentType: string }> {
+        return this.http.get(`${this.baseUrl}${endpoint}`, { 
+            responseType: 'arraybuffer',
+            observe: 'response'
+        }).pipe(
+            retry(1),
+            map((response: any) => ({
+                data: response.body,
+                contentType: response.headers.get('Content-Type') || 'application/octet-stream'
+            })),
             catchError((error: HttpErrorResponse) => this.handleError(error))
         );
     }

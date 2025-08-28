@@ -65,3 +65,15 @@ export interface IRenameItemRequest {
     id: string;
     name: string;
 }
+
+export interface IUploadFilesRequest {
+    files: File[];
+    parentId: string | null;
+}
+
+export interface IUploadResponse {
+    uploadedFiles?: IFileDto[];
+    errors?: string[];
+    success?: boolean;
+    message?: string;
+}
