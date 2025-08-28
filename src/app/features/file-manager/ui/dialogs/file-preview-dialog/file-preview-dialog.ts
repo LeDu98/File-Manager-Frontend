@@ -1,5 +1,5 @@
-import { Component, Input, OnDestroy } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Dialog } from 'primeng/dialog';
 import { Button } from 'primeng/button';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -14,7 +14,7 @@ import { IFileManagerItem } from '../../../models';
   templateUrl: './file-preview-dialog.html',
   styleUrls: ['./file-preview-dialog.scss'],
   standalone: true,
-  imports: [CommonModule, DatePipe, Dialog, Button, ProgressSpinner, SharedModule]
+  imports: [CommonModule, Dialog, Button, ProgressSpinner, SharedModule]
 })
 export class FilePreviewDialogComponent implements OnDestroy {
   showDialog = false;
