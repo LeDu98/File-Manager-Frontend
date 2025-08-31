@@ -5,37 +5,82 @@
 
 
 <!-- LIST VIEW (p-table) -->
-<div *ngIf="!loading && !error && viewMode==='list'">
-    <p-table [value]="items" [tableStyle]="{ 'min-width': '40rem' }">
+<div *ngIf="!loading && !error && viewMode==='list'" class="list-view-container">
+    <p-table [value]="items" [tableStyle]="{ 'min-width': '100%' }" [responsive]="true" [scrollable]="true" scrollHeight="flex" class="responsive-table">
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:3rem"></th>
-                <th><span style="user-select: none;">Name</span></th>
-                <th><span style="user-select: none;">Type</span></th>
-                <th><span style="user-select: none;">Size</span></th>
-                <th><span style="user-select: none;">Updated</span></th>
+                <th class="checkbox-column">
+                    <span class="sr-only">Select</span>
+                </th>
+                <th class="name-column">
+                    <span class="column-header">Name</span>
+                </th>
+                <th class="type-column hidden-mobile">
+                    <span class="column-header">Type</span>
+                </th>
+                <th class="size-column hidden-mobile hidden-small">
+                    <span class="column-header">Size</span>
+                </th>
+                <th class="date-column hidden-mobile">
+                    <span class="column-header">Updated</span>
+                </th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
-            <tr (click)="toggleSelected.emit({id:row.id, kind:row.kind})" [ngClass]="isSelected(row.id) ? 'selected-row' : 'non-selected-row'" style="transition: background 0.2s;">
-                <td (click)="$event.stopPropagation()">
-                    <p-checkbox [binary]="true" [ngModel]="isSelected(row.id)" (onChange)="toggleSelected.emit({id:row.id, kind:row.kind})"></p-checkbox>
+        <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+            <tr (click)="toggleSelected.emit({id:row.id, kind:row.kind})" [ngClass]="isSelected(row.id) ? 'selected-row' : 'non-selected-row'" class="file-row" [attr.aria-selected]="isSelected(row.id)" [attr.aria-label]="'File: ' + row.name">
+
+                <td class="checkbox-column" (click)="$event.stopPropagation()">
+                    <p-checkbox [binary]="true" [ngModel]="isSelected(row.id)" (onChange)="toggleSelected.emit({id:row.id, kind:row.kind})" [ariaLabel]="'Select ' + row.name">
+                    </p-checkbox>
                 </td>
-                <td (dblclick)="itemOpened.emit(row)">
-                    <span class="folder-link" style="user-select: none;" pTooltip="Double-click to open">
-                        {{ row.name }}
+
+                <td class="name-column" (dblclick)="itemOpened.emit(row)">
+                    <div class="file-info">
+                        <div class="file-icon">
+                            <i class="pi" [ngClass]="getFileIcon(row)" [style.color]="getFileIconColor(row)"></i>
+                        </div>
+                        <div class="file-details">
+                            <span class="file-name" pTooltip="Double-click to open" tooltipPosition="top">
+                                {{ row.name }}
+                            </span>
+                            <div class="mobile-metadata visible-mobile">
+                                <span class="file-type">{{ row.kind }}</span>
+                                <span class="file-size" *ngIf="row.kind === 'file'">{{ formatBytes(row.size || 0) }}</span>
+                                <span class="file-date">{{ row.modifiedOn | date:'dd.MM.yyyy' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+
+                <td class="type-column hidden-mobile">
+                    <span class="file-type-badge" [ngClass]="'type-' + row.kind">
+                        {{ row.kind }}
                     </span>
                 </td>
-                <td>
-                    <span style="user-select: none;">{{ row.kind }}</span>
+
+                <td class="size-column hidden-mobile hidden-small">
+                    <span class="file-size" *ngIf="row.kind === 'file'">
+                        {{ formatBytes(row.size || 0) }}
+                    </span>
+                    <span class="folder-indicator" *ngIf="row.kind === 'folder'">—</span>
                 </td>
-                <td>
-                    <span style="user-select: none;">
-                        {{ row.kind === 'file' ? formatBytes(row.size || 0) : '' }}
+
+                <td class="date-column hidden-mobile">
+                    <span class="file-date" [attr.title]="row.modifiedOn | date:'full'">
+                        {{ row.modifiedOn | date:'dd.MM.yyyy HH:mm' }}
                     </span>
                 </td>
-                <td>
-                    <span style="user-select: none;">{{ row.modifiedOn | date:'dd.MM.yyyy HH:mm' }}</span>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6" class="empty-state-cell">
+                    <div class="empty-state">
+                        <i class="pi pi-folder-open empty-icon"></i>
+                        <h3>No files or folders</h3>
+                        <p>This folder is empty. Upload files or create new folders to get started.</p>
+                    </div>
                 </td>
             </tr>
         </ng-template>
@@ -43,16 +88,50 @@
 </div>
 
 
-<!-- GRID VIEW (cards) -->
-<div *ngIf="!loading && !error && viewMode==='grid'" class="grid">
-    <div class="col-12 md:col-3" *ngFor="let item of items">
-        <p-card (dblclick)="itemOpened.emit(item)" [class.surface-200]="isSelected(item.id)" class="cursor-pointer">
-            <ng-template pTemplate="header">
-                <i class="pi" [ngClass]="item.kind==='folder' ? 'pi-folder' : 'pi-file'" style="font-size:1.5rem"></i>
-            </ng-template>
-            <div class="font-medium">{{ item.name }}</div>
-            <div class="text-600 text-sm">{{ item.kind }} • {{ item.updatedAt | date:'short' }}</div>
+<div *ngIf="!loading && !error && viewMode==='grid'" class="grid-view-container">
+    <div class="responsive-grid">
+        <div class="grid-item" *ngFor="let item of items; trackBy: trackByItemId">
+            <p-card (dblclick)="itemOpened.emit(item)" [class.selected-card]="isSelected(item.id)" class="file-card" [attr.aria-selected]="isSelected(item.id)" [attr.aria-label]="'File: ' + item.name">
 
-        </p-card>
+                <ng-template pTemplate="header">
+                    <div class="card-header-content">
+                        <div class="file-icon-container">
+                            <i class="pi file-icon" [ngClass]="getFileIcon(item)" [style.color]="getFileIconColor(item)">
+                            </i>
+                        </div>
+
+                        <div class="selection-overlay" (click)="$event.stopPropagation(); toggleSelected.emit({id:item.id, kind:item.kind})">
+                            <p-checkbox [binary]="true" [ngModel]="isSelected(item.id)" (onChange)="toggleSelected.emit({id:item.id, kind:item.kind})" [ariaLabel]="'Select ' + item.name">
+                            </p-checkbox>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <div class="card-body-content">
+                    <div class="file-name" pTooltip="{{ item.name }}" tooltipPosition="top" [tooltipDisabled]="item.name.length <= 20">
+                        {{ item.name }}
+                    </div>
+
+                    <div class="file-metadata">
+                        <span class="file-type-badge" [ngClass]="'type-' + item.kind">
+                            {{ item.kind }}
+                        </span>
+                        <span class="file-size" *ngIf="item.kind === 'file' && item.size">
+                            {{ formatBytes(item.size) }}
+                        </span>
+                    </div>
+
+                    <div class="file-date" [attr.title]="item.modifiedOn | date:'full'">
+                        {{ item.modifiedOn | date:'dd.MM.yyyy' }}
+                    </div>
+                </div>
+            </p-card>
+        </div>
+    </div>
+
+    <div *ngIf="items.length === 0" class="empty-state-grid">
+        <i class="pi pi-th-large empty-icon"></i>
+        <h3>No files or folders</h3>
+        <p>This folder is empty. Upload files or create new folders to get started.</p>
     </div>
 </div>

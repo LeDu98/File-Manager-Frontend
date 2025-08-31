@@ -4,12 +4,14 @@ import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { ItemNameDialogComponent, UploadDialogComponent } from '../dialogs';
 import { ICreateFolderRequest, ISelectedItemInfo, ItemKind } from '../../models';
+import { NgIf } from '@angular/common';
 
 
 @Component({
   standalone: true,
   selector: 'app-file-manager-toolbar',
-  imports: [Toolbar, Button, DropdownModule, ItemNameDialogComponent, UploadDialogComponent],
+  styleUrls: ['./file-manager-toolbar.component.scss'],
+  imports: [Toolbar, Button, DropdownModule, ItemNameDialogComponent, UploadDialogComponent,NgIf],
   templateUrl: './file-manager-toolbar.component.html'
 })
 export class FileManagerToolbar {

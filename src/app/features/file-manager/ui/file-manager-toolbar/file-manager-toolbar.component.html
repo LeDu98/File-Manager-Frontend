@@ -1,14 +1,33 @@
-<p-toolbar>
-    <div class="p-toolbar-group-start" style="gap: 0.75rem; display: flex; align-items: center;">
-        <p-button label="Upload" icon="pi pi-upload" severity="primary" (click)="showUploadDialog()"></p-button>
-        <p-button label="New folder" icon="pi pi-folder-plus" severity="primary" (click)="showNewFolderDialog()"></p-button>
-        <p-button label="Rename" icon="pi pi-pencil" [disabled]="!canRename" (click)="showRenameDialog()" severity="primary"></p-button>
-        <p-button label="Delete" icon="pi pi-trash" [disabled]="!canDelete" (click)="deleteRequested.emit()" severity="danger"></p-button>
+<p-toolbar class="file-manager-toolbar">
+    <div class="p-toolbar-group-start">
+        <div class="primary-actions">
+            <p-button label="Upload" icon="pi pi-upload" severity="primary" (click)="showUploadDialog()" [class]="'action-btn upload-btn'">
+            </p-button>
+            <p-button label="New folder" icon="pi pi-folder-plus" severity="primary" (click)="showNewFolderDialog()" [class]="'action-btn new-folder-btn'">
+            </p-button>
+        </div>
+
+        <div class="toolbar-separator"></div>
+
+        <div class="secondary-actions" [class.has-selection]="selectionCount > 0">
+            <p-button label="Rename" icon="pi pi-pencil" [disabled]="!canRename" (click)="showRenameDialog()" severity="primary" [class]="'action-btn rename-btn'">
+            </p-button>
+            <p-button label="Delete" icon="pi pi-trash" [disabled]="!canDelete" (click)="deleteRequested.emit()" severity="danger" [class]="'action-btn delete-btn'">
+            </p-button>
+        </div>
     </div>
+
     <div class="p-toolbar-group-end">
-        <span class="mr-2" style="margin-right: 10px;">View</span>
-        <p-button icon="pi pi-list" [outlined]="viewMode!=='list'" (click)="viewModeChanged.emit('list')"></p-button>
-        <!-- <p-button icon="pi pi-th-large" class="ml-2" [outlined]="viewMode!=='grid'" (click)="viewModeChanged.emit('grid')"></p-button> -->
+        <div class="view-toggle">
+            <p-button icon="pi pi-list" severity="secondary" [outlined]="viewMode !== 'list'" (click)="viewModeChanged.emit('list')" pTooltip="List View" tooltipPosition="bottom" [class]="'view-btn list-view-btn'">
+            </p-button>
+            <p-button icon="pi pi-th-large" severity="secondary" [outlined]="viewMode !== 'grid'" (click)="viewModeChanged.emit('grid')" pTooltip="Grid View" tooltipPosition="bottom" [class]="'view-btn grid-view-btn'">
+            </p-button>
+        </div>
+
+        <div class="selection-info" *ngIf="selectionCount > 0">
+            <span class="selection-count">{{ selectionCount }} selected</span>
+        </div>
     </div>
 </p-toolbar>
 

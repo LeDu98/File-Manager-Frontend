@@ -5,13 +5,15 @@ import { Card } from 'primeng/card';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { FormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { ISelectionModel } from '../../models';
 
 
 @Component({
   standalone: true,
   selector: 'app-file-manager-list',
-  imports: [NgIf, NgFor, DatePipe, TableModule, Card, ProgressSpinner,NgClass, FormsModule,CheckboxModule],
+  imports: [NgIf, NgFor, DatePipe, TableModule, Card, ProgressSpinner, NgClass, FormsModule, CheckboxModule, ButtonModule, TooltipModule],
   templateUrl: './file-manager-list.component.html',
   styleUrls: ['./file-manager-list.component.scss']
 })
@@ -39,4 +41,47 @@ export class FileManagerList {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
+
+  getFileIcon(item: any): string {
+    if (item.kind === 'folder') {
+      return 'pi-folder';
+    }
+    
+    // Get file extension
+    const extension = item.name.split('.').pop()?.toLowerCase();
+    
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return 'pi-image';
+      case 'txt':
+        return 'pi-file';
+      default:
+        return 'pi-file';
+    }
+  }
+
+  getFileIconColor(item: any): string {
+    if (item.kind === 'folder') {
+      return '#ffa726';
+    }
+    
+    const extension = item.name.split('.').pop()?.toLowerCase();
+    
+    switch (extension) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return '#4caf50';
+      default:
+        return '#78909c';
+    }
+  }
+
+  trackByItemId(index: number, item: any): any {
+    return item.id;
+  }
+
+
 }

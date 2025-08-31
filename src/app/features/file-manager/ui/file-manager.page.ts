@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { MenuItem } from 'primeng/api';
 import { DataViewModule } from 'primeng/dataview';
 import { MenuModule } from 'primeng/menu';
 import { ContextMenuModule } from 'primeng/contextmenu';

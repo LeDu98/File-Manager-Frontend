@@ -1,0 +1,215 @@
+// Toolbar Base Styles
+.file-manager-toolbar {
+     ::ng-deep .p-toolbar {
+        background: transparent;
+        border: none;
+        padding: 0.75rem 0;
+        .p-toolbar-group-start,
+        .p-toolbar-group-end {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .p-toolbar-group-start {
+            flex: 1;
+            flex-wrap: wrap;
+        }
+        .p-toolbar-group-end {
+            flex-shrink: 0;
+        }
+    }
+}
+
+// Action Groups
+.primary-actions,
+.secondary-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+// Toolbar Separator
+.toolbar-separator {
+    width: 1px;
+    height: 24px;
+    background: #dee2e6;
+    margin: 0 1rem;
+    flex-shrink: 0;
+    @media (max-width: 575.98px) {
+        margin: 0 0.5rem;
+        height: 20px;
+    }
+}
+
+.secondary-actions {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    &.has-selection {
+        opacity: 1;
+    }
+    .action-btn:disabled {
+        opacity: 0.4;
+    }
+}
+
+// View Toggle
+.view-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.125rem;
+    background: #f8f9fa;
+    .view-btn {
+         ::ng-deep .p-button {
+            border: none;
+            background: transparent;
+            color: #6c757d;
+            padding: 0.375rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            &:not(.p-button-outlined) {
+                background: #ffffff;
+                color: #495057;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            }
+            &:hover {
+                background: #e9ecef;
+                color: #495057;
+            }
+        }
+    }
+}
+
+// Selection Info
+.selection-info {
+    .selection-count {
+        font-size: 0.875rem;
+        color: #6c757d;
+        background: #e3f2fd;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+}
+
+// Button Styles
+.action-btn {
+     ::ng-deep .p-button {
+        margin-bottom: 5px!important;
+        margin-left: 5px!important;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        &:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        &:active:not(:disabled) {
+            transform: translateY(0);
+        }
+    }
+}
+
+// Responsive Design
+// Extra Small devices (phones, 576px and down)
+@media (max-width: 575.98px) {
+    .file-manager-toolbar ::ng-deep .p-toolbar {
+        padding: 0.5rem 0;
+        .p-toolbar-group-start {
+            gap: 0.25rem;
+            .primary-actions,
+            .secondary-actions {
+                gap: 0.5rem;
+            }
+            .action-btn ::ng-deep .p-button {
+                padding: 0.375rem 0.5rem;
+                font-size: 0.75rem;
+                .p-button-label {
+                    display: none;
+                }
+                .p-button-icon {
+                    margin-right: 0;
+                    font-size: 1rem;
+                }
+            }
+        }
+        .p-toolbar-group-end {
+            gap: 0.5rem;
+            .view-toggle {
+                .view-btn ::ng-deep .p-button {
+                    padding: 0.25rem;
+                    .p-button-icon {
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+            .selection-info .selection-count {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+    }
+}
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .file-manager-toolbar ::ng-deep .p-toolbar {
+        .p-toolbar-group-start {
+            gap: 0.375rem;
+            .primary-actions,
+            .secondary-actions {
+                gap: 0.6rem;
+            }
+            .action-btn ::ng-deep .p-button {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+            }
+        }
+        .p-toolbar-group-end {
+            .selection-info .selection-count {
+                font-size: 0.8rem;
+            }
+        }
+    }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .file-manager-toolbar ::ng-deep .p-toolbar {
+        .p-toolbar-group-start {
+            gap: 0.5rem;
+            .primary-actions,
+            .secondary-actions {
+                gap: 0.5rem;
+            }
+        }
+    }
+}
+
+// Large devices and up - default styles apply
+// Animation for secondary actions
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.secondary-actions.has-selection {
+    animation: fadeInScale 0.2s ease-out;
+}
+
+// Focus styles for accessibility
+.action-btn,
+.view-btn {
+     ::ng-deep .p-button:focus {
+        outline: 2px solid #007bff;
+        outline-offset: 2px;
+    }
+}
